@@ -12,3 +12,9 @@ class AuctionListing(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     is_active = models.BooleanField(default=True)
     image = models.URLField(blank=True, null=True)
+    
+class Bid(models.Model):
+    bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
+    listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="bids")
+    amount = models.DecimalField(max_digits=8, decimal_places=2)
+    timestamp = models.DateTimeField(auto_now_add=True)
