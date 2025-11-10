@@ -18,3 +18,9 @@ class Bid(models.Model):
     listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="bids")
     amount = models.DecimalField(max_digits=8, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+    listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="comments")
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
