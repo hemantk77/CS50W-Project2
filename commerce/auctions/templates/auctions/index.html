@@ -3,5 +3,24 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    {% for listing in listings %}
+        <div class="listing-item" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        
+            <h3>{{ listing.title }}</h3>
+
+            {% if listing.image %}
+                <img src="{{ listing.image }}" alt="{{ listing.title }}" style="max-height: 200px; max-width: 300px;">
+            {% endif %}
+
+            <p>{{ listing.description }}</p>
+
+            <strong>Price: ${{ listing.starting_bid }}</strong>
+        
+        {% empty %}
+            <p>No active listings found.</p>
+
+        {% endfor %}
+
+    {% endblock %}
+
 {% endblock %}
