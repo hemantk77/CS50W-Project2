@@ -12,6 +12,14 @@
 
     <h4>Price: ${{ listing.starting_bid }}</h4>
 
+    {% if user.is_authenticated %}
+        {% if user in listing.watchers.all %}
+            <a href="{% url 'watchlist' listing.id %}" class="btn btn-danger">Remove from Watchlist</a>
+        {% else %}
+            <a href="{% url 'watchlist' listing.id %}" class="btn btn-primary">Add to Watchlist</a>
+        {% endif %}
+    {% endif %}
+
     <hr>
 
 {% endblock %}
