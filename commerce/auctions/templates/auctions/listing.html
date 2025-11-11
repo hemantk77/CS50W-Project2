@@ -36,6 +36,19 @@
                 <input type="submit" value="Place Bid" class="btn btn-success mt-2">
             </div>
         </form>
+
+        {% if listing.is_active %}
+            {% if user.is_authenticated and user == listing.creator %}
+                <h4>Admin: Close this Auction</h4>
+                <p>Warning: This action cannot be undone.</p>
+
+                <form action="{% url 'close_auction' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" value="Close Auction" class="btn btn-danger">
+                </form>
+            {% endif %}
+        {% endif %}    
+
     {% endif %}
 
     <hr>
