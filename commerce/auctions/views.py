@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
 from .models import AuctionListing
@@ -92,3 +92,9 @@ def create(request):
             "form": form
         })
         
+def listing_page(request, listing_id):
+    listing = get_object_or_404(AuctionListing, pk=listing_id)
+    
+    return render(request, "auctions/listing.html", {
+        "listing":listing
+    })
