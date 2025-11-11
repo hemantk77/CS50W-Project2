@@ -1,0 +1,17 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>{{ listing.title }}</h2>
+
+    {% if listing.image %}
+        <img src="{{ listing.image }}" alt="{{ listing.title }}" style="max-height: 400px; max-width: 600px;">
+    {% endif %}
+
+    <p>{{ listing.description }}</p>
+
+    <h4>Price: ${{ listing.starting_bid }}</h4>
+
+    <hr>
+
+{% endblock %}
