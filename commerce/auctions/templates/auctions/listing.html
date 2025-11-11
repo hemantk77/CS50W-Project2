@@ -10,7 +10,7 @@
 
     <p>{{ listing.description }}</p>
 
-    <h4>Price: ${{ listing.starting_bid }}</h4>
+    <h4>Current Bid: ${{ current_bid }}</h4>
 
     {% if user.is_authenticated %}
         {% if user in listing.watchers.all %}
@@ -18,6 +18,15 @@
         {% else %}
             <a href="{% url 'watchlist' listing.id %}" class="btn btn-primary">Add to Watchlist</a>
         {% endif %}
+
+        <form action="{% url 'listing_page' listing.id %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="bid_amount">Place Bid:</label>
+                <input type.html"number" name="bid_amount" min="{{ current_bid }}" step="0.01" class="form-control" placeholder="Your Bid">
+                <input type="submit" value="Place Bid" class="btn btn-success mt-2">
+            </div>
+        </form>
     {% endif %}
 
     <hr>
