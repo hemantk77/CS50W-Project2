@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -6,8 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
-from .models import AuctionListing
-from .models import User
+from .models import AuctionListing, Bid, User
 
 
 def index(request):
@@ -103,6 +103,37 @@ def listing_page(request, listing_id):
         current_bid = listing.starting_bid
     else:
         current_bid = highest_bid
+        
+    if request.method == "POST":
+        bid_amount = request.POST.get("bid_amount")
+        
+        if not bid_amount:
+            messages.error(request, "Please enter your Bid Amount.")
+            return redirect("listing_page", listing_id=listing_id)
+        
+        try:
+            bid_amount = float(bid_amount)
+            
+            if bid_amount < current_bid:
+                messages.error(request, f"Your Bid must be atleast ${current_bid}.")
+            elif highest_bid is None and bid_amount < listing.starting_bid:
+                messages.error(request, f"Your Bid must be atleast ${listing.starting_bid}.")
+            else:
+                #Created new_bid object here
+                new_bid = Bid(
+                    bidder = request.user,
+                    listing = listing,
+                    amount = bid_amount
+                )
+                new_bid.save()
+                messages.success(request, "Your Bid has been placed!")
+                
+                current_bid = bid_amount
+        
+        except ValueError:
+            messages.error(request, "Invalid Bid. Please enter a valid number.")
+            
+        return redirect("listing_page", listing_id=listing_id)
         
     return render(request, "auctions/listing.html", {
         "listing":listing,
