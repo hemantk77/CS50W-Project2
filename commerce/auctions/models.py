@@ -12,6 +12,7 @@ class AuctionListing(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     is_active = models.BooleanField(default=True)
     image = models.URLField(blank=True, null=True)
+    watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
     
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
