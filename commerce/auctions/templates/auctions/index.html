@@ -4,7 +4,7 @@
     <h2>Active Listings</h2>
 
     {% for listing in listings %}
-        <div class="listing-item" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <div class="listing-item" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
         
             <h3><a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a></h3>
 
@@ -15,6 +15,8 @@
             <br>
 
             <strong>Price: ${{ listing.starting_bid }}</strong>
+
+            </div>
         
         {% empty %}
             <p>No active listings found.</p>
