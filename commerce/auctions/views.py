@@ -151,6 +151,7 @@ def watchlist(request, listing_id):
         
     return redirect("listing_page", listing_id=listing_id)
 
+@login_required
 def close_auction(request, listing_id):
     listing = get_object_or_404(AuctionListing, pk=listing_id)
     
