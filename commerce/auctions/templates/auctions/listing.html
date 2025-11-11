@@ -2,13 +2,13 @@
 
 {% block body %}
     {% if messages %}
-        <ul class="messages">
+        <div class="messages">
             {% for message in messages %}
-                <li {% if message.tags %} class="{{message.tags}}" {% endif %}>
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %}" role="alert">
                     {{ message }}
-                </li>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 
     <h2>{{ listing.title }}</h2>
