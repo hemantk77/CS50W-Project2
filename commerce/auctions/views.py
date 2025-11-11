@@ -150,3 +150,28 @@ def watchlist(request, listing_id):
         listing.watchers.add(request.user)
         
     return redirect("listing_page", listing_id=listing_id)
+
+def close_auction(request, listing_id):
+    listing = get_object_or_404(AuctionListing, pk=listing_id)
+    
+    if request.user != listing.creator:
+        messages.error(request, "You are not allowed to close the listing.")
+        return redirect("listing_page", listing_id=listing.id)
+    
+    if not listing.is_active:
+        messages.error(request, "The listing is no longer active.")
+        return redirect("listing_page", listing_id=listing.id)
+    
+    highest_bid = listing.bids.order_by('-amount').first()
+    
+    if highest_bid is not None:
+        listing.is_active = False
+        listing.winner = highest_bid.bidder
+        listing.save()
+        messages.success(request, f"Auction Closed! Congratulations {highest_bid.bidder.username}, You are the Winner!")
+    else:
+        listing.is_active = False
+        listing.save()
+        messages.success(request, "Auction closed with No Bids!")
+    
+    return redirect("listing_page", listing_id=listing.id)
