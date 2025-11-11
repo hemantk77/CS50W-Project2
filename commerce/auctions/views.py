@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -95,8 +96,17 @@ def create(request):
 def listing_page(request, listing_id):
     listing = get_object_or_404(AuctionListing, pk=listing_id)
     
+    highest_bid_data = listing.bids.aggregate(Max('amount'))
+    highest_bid = highest_bid_data['amount__max']
+    
+    if highest_bid is None:
+        current_bid = listing.starting_bid
+    else:
+        current_bid = highest_bid
+        
     return render(request, "auctions/listing.html", {
-        "listing":listing
+        "listing":listing,
+        "current_bid":current_bid
     })
     
 @login_required    
