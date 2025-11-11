@@ -98,3 +98,14 @@ def listing_page(request, listing_id):
     return render(request, "auctions/listing.html", {
         "listing":listing
     })
+    
+@login_required    
+def watchlist(request, listing_id):
+    listing = get_object_or_404(AuctionListing, pk=listing_id)
+    
+    if request.user in listing.watchers.all():
+        listing.watchers.remove(request.user)
+    else:
+        listing.watchers.add(request.user)
+        
+    return redirect("listing_page", listing_id=listing_id)
