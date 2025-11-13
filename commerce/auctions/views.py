@@ -7,7 +7,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from .forms import ListingForm
-from .models import AuctionListing, Bid, User
+from .models import AuctionListing, Bid, User, Comment
+from decimal import Decimal, InvalidOperation
 
 
 def index(request):
@@ -112,27 +113,40 @@ def listing_page(request, listing_id):
             return redirect("listing_page", listing_id=listing_id)
         
         try:
-            bid_amount = float(bid_amount)
+            bid_amount = Decimal(bid_amount)
             
-            if bid_amount < current_bid:
-                messages.error(request, f"Your Bid must be atleast ${current_bid}.")
-            elif highest_bid is None and bid_amount < listing.starting_bid:
-                messages.error(request, f"Your Bid must be atleast ${listing.starting_bid}.")
+            is_valid_bid = False
+            
+            if highest_bid is None:
+                # This is the FIRST bid
+                if bid_amount >= listing.starting_bid:
+                    is_valid_bid = True
+                else:
+                    messages.error(request, f"The first bid must be at least ${listing.starting_bid}.")
             else:
-                #Created new_bid object here
+                # This is a SUBSEQUENT bid
+                if bid_amount > highest_bid:
+                    is_valid_bid = True
+                else:
+                    messages.error(request, f"Your bid must be greater than the current price of ${highest_bid}.")
+            
+            # 3. Save if valid
+            if is_valid_bid:
                 new_bid = Bid(
-                    bidder = request.user,
-                    listing = listing,
-                    amount = bid_amount
+                    bidder=request.user,
+                    listing=listing,
+                    amount=bid_amount
                 )
                 new_bid.save()
-                messages.success(request, "Your Bid has been placed!")
+                messages.success(request, "Your bid has been placed!")
                 
-                current_bid = bid_amount
+                current_bid = bid_amount 
         
-        except ValueError:
-            messages.error(request, "Invalid Bid. Please enter a valid number.")
+        except InvalidOperation:
+            #Error that Decimal raises (instead of ValueError)
+            messages.error(request, "Invalid bid. Please enter a valid number.")
             
+        # Your redirect here is correct.
         return redirect("listing_page", listing_id=listing_id)
         
     return render(request, "auctions/listing.html", {
