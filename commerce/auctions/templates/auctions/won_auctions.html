@@ -19,7 +19,7 @@
                     
                     <div class="card-footer">
                         <p class="card-text">{{ listing.description }}</p>
-                        <strong>Winning Price: ${{ listing.bids.aggregate.max.amount }}</strong>
+                        <strong>Winning Price: ${{ listing.get_current_price }}</strong>
                     </div>
                 </div>
             </div>
