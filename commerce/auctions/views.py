@@ -176,3 +176,11 @@ def close_auction(request, listing_id):
         messages.success(request, "Auction closed with No Bids!")
     
     return redirect("listing_page", listing_id=listing.id)
+
+@login_required
+def won_auctions(request):
+    won_listings = AuctionListing.objects.filter(winner=request.user)
+    
+    return render(request, "auctions/won_auctions.html", {
+        "listings": won_listings
+    })
