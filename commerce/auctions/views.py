@@ -130,7 +130,6 @@ def listing_page(request, listing_id):
                 else:
                     messages.error(request, f"Your bid must be greater than the current price of ${highest_bid}.")
             
-            # 3. Save if valid
             if is_valid_bid:
                 new_bid = Bid(
                     bidder=request.user,
@@ -148,10 +147,13 @@ def listing_page(request, listing_id):
             
         # Your redirect here is correct.
         return redirect("listing_page", listing_id=listing_id)
+    
+    comments = listing.comments.all().order_by("-timestamp")
         
     return render(request, "auctions/listing.html", {
         "listing":listing,
-        "current_bid":current_bid
+        "current_bid":current_bid,
+        "comments": comments
     })
     
 @login_required    
