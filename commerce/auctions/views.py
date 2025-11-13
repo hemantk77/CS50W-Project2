@@ -106,53 +106,65 @@ def listing_page(request, listing_id):
         current_bid = highest_bid
         
     if request.method == "POST":
-        bid_amount = request.POST.get("bid_amount")
         
-        if not bid_amount:
-            messages.error(request, "Please enter your Bid Amount.")
+        # --- CHECK 1: Was the COMMENT form submitted? ---
+        if "submit_comment" in request.POST:
+            comment_text = request.POST.get("comment_text")
+            
+            if not comment_text:
+                messages.error(request, "Please enter a comment.")
+            else:
+                new_comment = Comment(
+                    author=request.user,
+                    listing=listing,
+                    content=comment_text
+                )
+                new_comment.save()
+                messages.success(request, "Your Comment has been posted!")
+            
             return redirect("listing_page", listing_id=listing_id)
         
-        try:
-            bid_amount = Decimal(bid_amount)
+        elif "bid_amount" in request.POST:
+            bid_amount_str = request.POST.get("bid_amount")
             
-            is_valid_bid = False
-            
-            if highest_bid is None:
-                # This is the FIRST bid
-                if bid_amount >= listing.starting_bid:
-                    is_valid_bid = True
-                else:
-                    messages.error(request, f"The first bid must be at least ${listing.starting_bid}.")
+            if not bid_amount_str:
+                messages.error(request, "Please enter your Bid Amount.")
             else:
-                # This is a SUBSEQUENT bid
-                if bid_amount > highest_bid:
-                    is_valid_bid = True
-                else:
-                    messages.error(request, f"Your bid must be greater than the current price of ${highest_bid}.")
-            
-            if is_valid_bid:
-                new_bid = Bid(
-                    bidder=request.user,
-                    listing=listing,
-                    amount=bid_amount
-                )
-                new_bid.save()
-                messages.success(request, "Your bid has been placed!")
+                try:
+                    bid_amount = Decimal(bid_amount_str)
+                    is_valid_bid = False
+                    
+                    if highest_bid is None:
+                        if bid_amount >= listing.starting_bid:
+                            is_valid_bid = True
+                        else:
+                            messages.error(request, f"The first bid must be at least ${listing.starting_bid}.")
+                    else:
+                        if bid_amount > highest_bid:
+                            is_valid_bid = True
+                        else:
+                            messages.error(request, f"Your bid must be greater than the current price of ${highest_bid}.")
+                    
+                    if is_valid_bid:
+                        new_bid = Bid(
+                            bidder=request.user,
+                            listing=listing,
+                            amount=bid_amount
+                        )
+                        new_bid.save()
+                        messages.success(request, "Your Bid has been placed!")
                 
-                current_bid = bid_amount 
-        
-        except InvalidOperation:
-            #Error that Decimal raises (instead of ValueError)
-            messages.error(request, "Invalid bid. Please enter a valid number.")
+                except InvalidOperation:
+                    messages.error(request, "Invalid bid. Please enter a valid number.")
             
-        # Your redirect here is correct.
-        return redirect("listing_page", listing_id=listing_id)
-    
+            # After processing, redirect back to the page
+            return redirect("listing_page", listing_id=listing_id)
+
     comments = listing.comments.all().order_by("-timestamp")
         
     return render(request, "auctions/listing.html", {
-        "listing":listing,
-        "current_bid":current_bid,
+        "listing": listing,
+        "current_bid": current_bid,
         "comments": comments
     })
     
