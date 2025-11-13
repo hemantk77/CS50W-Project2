@@ -46,7 +46,21 @@
                 {% csrf_token %}
                 <input type="submit" value="Close Auction" class="btn btn-danger">
             </form>
-        {% endif %} 
+        {% endif %}
+        
+        {% if user.is_authenticated %}
+            <h4>Add a Comment here</h4>
+            <form action="{% url 'listing_page' listing.id %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea name="comment_text" class="form-control" rows="3" placeholder="Write your comment..."></textarea>
+                </div>
+        
+                <input type.html"submit" name="submit_comment" value="Post Comment" class="btn btn-primary mt-2">
+            </form>
+        {% endif %}
+
+        <hr> <h3>Comments</h3>
 
     {% endif %}
 
