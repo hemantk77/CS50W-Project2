@@ -60,7 +60,19 @@
             </form>
         {% endif %}
 
-        <hr> <h3>Comments</h3>
+        <hr> 
+        <h3>Comments</h3>
+        <div class="comment-section">
+            {% for comment in comments %}
+                <div class="comment" style="border: 1px solid #eee; padding: 10px; margin-bottom: 10px;">
+                    <strong>{{ comment.author.username }}</strong>
+                    <small>on {{ comment.timestamp|date:"F j, Y, g:i a" }}</small>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% empty %}
+                <p>No Comments yet.</p>
+            {% endfor %}
+        </div>
 
     {% endif %}
 
