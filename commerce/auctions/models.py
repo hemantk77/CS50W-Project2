@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Max
 
 
 class User(AbstractUser):
@@ -14,6 +15,15 @@ class AuctionListing(models.Model):
     image = models.URLField(blank=True, null=True)
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="auction_winner")
+    
+    def get_current_price(self):
+        highest_bid_data = self.bids.aggregate(Max('amount'))
+        highest_bid = highest_bid_data['amount__max']
+        
+        if highest_bid is None:
+            return self.starting_bid
+        else:
+            return highest_bid
     
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
