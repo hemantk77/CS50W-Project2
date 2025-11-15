@@ -3,23 +3,23 @@
 {% block body %}
     <h2>My Watchlist</h2>
 
-    {% for listing in listings %}
+    {% for watched_listing in watched_listings %}
             <div class="listing-item" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
         
-            <h3><a href="{% url 'listing_page' listing.id %}">{{ listing.title }}</a></h3>
+            <h3><a href="{% url 'listing_page' watched_listing.id %}">{{ watched_listing.title }}</a></h3>
 
-            {% if listing.image %}
-                <img src="{{ listing.image }}" alt="{{ listing.title }}" style="max-height: 200px; max-width: 300px;">
+            {% if Watched_listing.image %}
+                <img src="{{ watched_listing.image }}" alt="{{ watched_listing.title }}" style="max-height: 200px; max-width: 300px;">
             {% endif %}
 
             <br>
 
-            <strong>Initial Price: ${{ listing.starting_bid }}</strong>
+            <strong>Initial Price: ${{ watched_listing.starting_bid }}</strong>
 
             </div>
         
         {% empty %}
-            <p>No active listings found.</p>
+            <p>No watchlists found.</p>
 
         {% endfor %}
 
