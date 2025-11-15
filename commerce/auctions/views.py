@@ -169,7 +169,7 @@ def listing_page(request, listing_id):
     })
     
 @login_required    
-def watchlist(request, listing_id):
+def watchlist_toggle(request, listing_id):
     listing = get_object_or_404(AuctionListing, pk=listing_id)
     
     if request.user in listing.watchers.all():
