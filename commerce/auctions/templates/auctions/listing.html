@@ -23,9 +23,9 @@
 
     {% if user.is_authenticated and listing.is_active %}
         {% if user in listing.watchers.all %}
-            <a href="{% url 'watchlist' listing.id %}" class="btn btn-danger">Remove from Watchlist</a>
+            <a href="{% url 'watchlist_toggle' listing.id %}" class="btn btn-danger">Remove from Watchlist</a>
         {% else %}
-            <a href="{% url 'watchlist' listing.id %}" class="btn btn-primary">Add to Watchlist</a>
+            <a href="{% url 'watchlist_toggle' listing.id %}" class="btn btn-primary">Add to Watchlist</a>
         {% endif %}
 
         <p></p>
