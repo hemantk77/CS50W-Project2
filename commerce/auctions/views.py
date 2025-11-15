@@ -212,3 +212,12 @@ def won_auctions(request):
     return render(request, "auctions/won_auctions.html", {
         "listings": won_listings
     })
+    
+@login_required
+def watchlist(request):
+    watched_listings = request.user.watchlist.all()
+    
+    return render(request, "auctions/watchlist.html", {
+        "watched_listings": watched_listings
+    })
+    
