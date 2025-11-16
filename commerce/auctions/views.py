@@ -222,7 +222,7 @@ def watchlist(request):
     })
 
 def categories_list(request):
-    categories = AuctionListing.objects.filter(is_active=True).values("category").annotate(count=Count("category")).order_by("category")
+    categories = AuctionListing.objects.filter(is_active=True).exclude(category="").values("category").annotate(count=Count("category")).order_by("category")
     
     return render(request, "auctions/categories_list.html", {
         "categories":categories
