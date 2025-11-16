@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Max
+from django.db.models import Max, Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -220,4 +220,7 @@ def watchlist(request):
     return render(request, "auctions/watchlist.html", {
         "watched_listings": watched_listings
     })
+
+def categories_list(request):
+    categories = AuctionListing.objects.filter(is_active=True).values("category").annotate(count=Count("category")).order_by("category")
     
