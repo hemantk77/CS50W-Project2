@@ -12,6 +12,7 @@
     {% endif %}
 
     <h2>{{ listing.title }}</h2>
+    <h4>({{listing.category}})</h4>
 
     {% if listing.image %}
         <img src="{{ listing.image }}" alt="{{ listing.title }}" style="max-height: 400px; max-width: 600px;">
