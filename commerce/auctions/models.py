@@ -15,6 +15,7 @@ class AuctionListing(models.Model):
     image = models.URLField(blank=True, null=True)
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlist")
     winner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name="auction_winner")
+    category = models.CharField(max_length=64, blank=True)
     
     def get_current_price(self):
         highest_bid_data = self.bids.aggregate(Max('amount'))
