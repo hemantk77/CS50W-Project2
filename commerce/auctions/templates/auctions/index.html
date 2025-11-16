@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2>{% firstof page_title "Active Listings" %}</h2>
 
     {% for listing in listings %}
             <div class="listing-item" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
