@@ -227,3 +227,11 @@ def categories_list(request):
     return render(request, "auctions/categories_list.html", {
         "categories":categories
     })
+    
+def category_page(request, category_name):
+    listings = AuctionListing.objects.filter(is_active=True, category=category_name)
+    
+    return render(request, "auctions/index.html", {
+        "listings":listings,
+        "page_title": f"Listings in {category_name}"
+    })
